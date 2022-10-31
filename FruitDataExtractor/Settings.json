@@ -4,11 +4,11 @@
             "QueryGroupName": "QueryGroup1",
             "FileData":{
                 "FolderPath":"K:\\Toky\\Tools\\git-temp\\Fruit-Data-Extractor\\Static\\",
-                "XlsxFileName":"dev-data.xlsx"
+                "XlsxFileName":"extraction_habituelle.xlsx"
             },
             "QueryParams":[
-                "ABCDEF_abcde",
-                "ABCDEF_abcde"
+                "099672_40000",
+                "220518_00000"
             ],
             "Queries": [
                 {
@@ -16,7 +16,7 @@
                     "Query": [
                         "select ct.*,hc.* from contrat ct",
                         "join histocontratstatut hc on ct.idContrat = hc.idContrat",
-                        "where  concat_ws('_',NumContrat,NumSousContrat)= {0};"
+                        "where  concat_ws('_',NumContrat,NumSousContrat)= '{0}';"
                     ]
                 },
                 {
@@ -25,7 +25,7 @@
                         "select ccb.*,hcb.* from contrat ct",
                         "left join contratcb ccb  on ct.idContrat = ccb.idContrat",
                         "left join histocbstatut hcb on ccb.idContratCB = hcb.idContratCB",
-                        "where  concat_ws('_', NumContrat,NumSousContrat)= {0};"
+                        "where  concat_ws('_', NumContrat,NumSousContrat)= '{0}';"
                     ]
                 },
                 {
@@ -41,7 +41,7 @@
                         "left join tauxglobaux tg on tg.idMP = tr.idMP",
                         "left join mp on mp.idMP = tr.idMP",
                         "left join taux tx on tx.idTarification = tr.idTarification",
-                        "where concat_ws('_', NumContrat,NumSousContrat)= {0}",
+                        "where concat_ws('_', NumContrat,NumSousContrat)= '{0}'",
                         "group by  tx.idTaux",
                         "order by ccb.CodeCB,cb.CodeSocle desc,tr.CodeSR,mp.CodeMP;"
                     ]
@@ -53,7 +53,7 @@
         "Database": "cassis",
         "User": "root",
         "Password": "normasys",
-        "Host": "localhost",
+        "Host": "51.91.25.234",
         "Port": 3306
     }
 }

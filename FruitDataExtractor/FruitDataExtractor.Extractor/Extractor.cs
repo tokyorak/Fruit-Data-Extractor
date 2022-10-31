@@ -19,17 +19,17 @@ public class Extractor
 
     public void Run()
     {
-        string outFileDirectory = Path.Combine(_extractorParams.OutputData.FilePath, _extractorParams.QueryGroupName);
+        string outFileDirectory = Path.Combine(_extractorParams.OutputData.FolderPath, _extractorParams.QueryGroupName);
 
         // Create the main directory
         // Delete the directory if it already exists
         if(File.Exists(outFileDirectory))
         {
-            File.Delete(outFileDirectory);
+            Directory.Delete(outFileDirectory);
         }
         else
         {
-            File.Create(outFileDirectory);
+            Directory.CreateDirectory(outFileDirectory);
         }
 
         // Launch extraction
@@ -43,8 +43,16 @@ public class Extractor
             // Loop for each QueryParams and execute all required queries
             foreach(var queryparam in _extractorParams.QueryFilteringValues)
             {
+                var queryParamDirectory = Path.Combine(outFileDirectory, queryparam);
+                if(!Directory.Exists(queryParamDirectory))
+                {
+                    Directory.CreateDirectory(queryParamDirectory);
+                }
+
                 var excelFile = string.Format("{0}-{1}", queryparam, _extractorParams.OutputData.FileName);
-                using var fs = new FileStream(excelFile, FileMode.Create, FileAccess.Write);
+                var excelFilePath = Path.Combine(queryParamDirectory, excelFile);
+
+                using var fs = new FileStream(excelFilePath, FileMode.Create, FileAccess.Write);
                 // Excel file prep
                 IWorkbook workbook = new XSSFWorkbook();
 
@@ -58,12 +66,13 @@ public class Extractor
 
                     // Record the result
                     dataAdapter.Fill(dataSet, query.CsvOutputName);
+                    // dataAdapter.Fill(dataSet);
 
                     // Prepare .csv path
-                    var outFileName = Path.Combine(outFileDirectory, string.Format("{0}.csv", query.CsvOutputName));
+                    var outFileName = Path.Combine(queryParamDirectory, string.Format("{0}.csv", query.CsvOutputName));
 
                     // Write to .csv file
-                    StreamWriter writer = WriteToCsv(query, dataSet, outFileName);
+                    WriteToCsv(query, dataSet, outFileName);
 
                     // Compile to xlsx
                     WriteToXlsx(workbook, query, outFileName);
@@ -90,18 +99,19 @@ public class Extractor
     private static int AddContentToRow(ISheet sheet, string[] contentRow)
     {
         int rowIndex = 0;
-        IRow row = sheet.CreateRow(rowIndex);
+        IRow row;
         foreach(var content in contentRow)
         {
+            row = sheet.CreateRow(rowIndex);
             row.CreateCell(0).SetCellValue(content);
             rowIndex++;
         }
         return rowIndex;
     }
 
-    private static StreamWriter WriteToCsv(Query query, DataSet? dataSet, string outFileName)
+    private static void WriteToCsv(Query query, DataSet? dataSet, string outFileName)
     {
-        StreamWriter writer = new(outFileName, false, Encoding.UTF8);
+        using StreamWriter writer = new(outFileName, false, Encoding.UTF8);
         for (int i = 0; i < dataSet?.Tables[query.CsvOutputName]?.Rows.Count; ++i)
         {
             StringBuilder sb = new();
@@ -109,17 +119,34 @@ public class Extractor
 
             if (row is not null)
             {
+                if(i == 0)
+                {
+                    foreach(DataColumn item in row.Table.Columns)
+                    {
+                        sb.AppendFormat("\"{0}\"",item.ColumnName);
+                        sb.Append(',');
+                    }
+                    sb.Remove(sb.Length - 1, 1);
+                    sb.AppendLine("");
+                }
+
                 foreach (DataColumn item in row.Table.Columns)
                 {
-                    sb.AppendFormat("\"{0}\"", row[item]);
-                    sb.Append(';');
+                    if(row[item] is DateTime)
+                    {
+                        sb.AppendFormat("{0:dd/MM/yyyy}", row[item]);
+                        sb.Append(',');
+                    }
+                    else
+                    {
+                        sb.AppendFormat("\"{0}\"", row[item]);
+                        sb.Append(',');
+                    }
                 }
                 sb.Remove(sb.Length - 1, 1);
                 sb.AppendLine("");
                 writer.Write(sb.ToString());
             }
         }
-
-        return writer;
     }
 }
