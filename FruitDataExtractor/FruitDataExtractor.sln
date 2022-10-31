@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitDataExtractor.Launcher", "FruitDataExtractor.Launcher\FruitDataExtractor.Launcher.csproj", "{3BBF8499-096B-4CF8-AB9B-67D204C58B35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitDataExtrator.Extractor", "FruitDataExtrator.Extractor\FruitDataExtrator.Extractor.csproj", "{BE7BED4A-ABFA-4077-97A1-AA878ECBC76B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitDataExtractor.Extractor", "FruitDataExtractor.Extractor\FruitDataExtractor.Extractor.csproj", "{BE7BED4A-ABFA-4077-97A1-AA878ECBC76B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

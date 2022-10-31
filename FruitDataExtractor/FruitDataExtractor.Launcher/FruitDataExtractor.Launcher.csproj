@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\FruitDataExtrator.Extractor\FruitDataExtrator.Extractor.csproj" />
+    <ProjectReference Include="..\FruitDataExtractor.Extractor\FruitDataExtractor.Extractor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mysql.Data" Version="8.0.31" />
   </ItemGroup>
 
   <PropertyGroup>
