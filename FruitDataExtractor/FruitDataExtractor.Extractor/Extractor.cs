@@ -69,7 +69,7 @@ public class Extractor
                     // dataAdapter.Fill(dataSet);
 
                     // Prepare .csv path
-                    var outFileName = Path.Combine(queryParamDirectory, string.Format("{0}.csv", query.CsvOutputName));
+                    var outFileName = Path.Combine(queryParamDirectory, string.Format("{0}-{1}.csv", queryparam, query.CsvOutputName));
 
                     // Write to .csv file
                     WriteToCsv(query, dataSet, outFileName);

@@ -1,0 +1,10 @@
+select codeent, count(*)
+from (select pt.codeentite, pt2.codeentite as codeentitederog
+,case when pt.codeentite = pt2.codeentite or pt2.codeentite is null then pt.codeentite else pt2.codeentite end as codeent
+from contrat ct
+join affiliation af on af.idcontrat = ct.idContrat
+join echeancier ec on ec.idaffiliation = af.idAffiliation
+join portefeuille pt on pt.codeptf = ct.codeptf
+left join portefeuille pt2 on pt2.codeptf = ct.codeptfderog
+where ec.datecreat >= '{0}') ent -- CALCUL execution date
+group by codeent;

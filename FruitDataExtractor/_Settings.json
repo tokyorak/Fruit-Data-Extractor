@@ -1,0 +1,105 @@
+{
+    "ConnectionString":{
+        "Database": "cassisbeta",
+        "User": "root",
+        "Password": "normasys",
+        "Host": "51.91.25.234",
+        "Port": 3306
+    },
+    "QueryGroupList":[
+        {
+            "QueryGroupName": "Extractions_ExtractionHabituelle_2022_12_15_Cassis_51",
+            "FileData":{
+                "FolderPath":"K:\\Toky\\Tools\\git-temp\\Fruit-Data-Extractor\\Static\\",
+                "XlsxFileName":"Extraction.xlsx"
+            },
+            "QueryParams":[
+                "099672_40000",
+                "220518_00000",
+                "239108_50000",
+                "262205_40000",
+                "266829_00000",
+                "269299_20000",
+                "630193_00000"
+            ],
+            "Queries": [
+                {
+                    "CsvFileName": "Statut-Ct",
+                    "Query": [
+                        "select ct.*,hc.* from contrat ct",
+                        "join histocontratstatut hc on ct.idContrat = hc.idContrat",
+                        "where  concat_ws('_',NumContrat,NumSousContrat)= '{0}';"
+                    ]
+                },
+                {
+                    "CsvFileName": "Statut-Cb",
+                    "Query": [
+                        "select ccb.*,hcb.* from contrat ct",
+                        "left join contratcb ccb  on ct.idContrat = ccb.idContrat",
+                        "left join histocbstatut hcb on ccb.idContratCB = hcb.idContratCB",
+                        "where  concat_ws('_', NumContrat,NumSousContrat)= '{0}';"
+                    ]
+                },
+                {
+                    "CsvFileName": "Taux",
+                    "Query": [
+                        "select cb.CodeCB,cb.CodeGC00,cb.CodeCotisIndiv,cb.CodeSocle,mp.CodeMP,tr.CodeSR,tx.CodeRT,tx.DateDebutTaux,tx.DateFinTaux,tx.OptionTech,",
+                        "tx.Taux1,tx.Taux2,tx.Taux3,tx.Taux4,tx.CodeAssiette1,tx.CodeAssiette2,tx.CodeAssiette3,tx.CodeAssiette4,tx.CodeFiscal,tx.DateModif,tx.DateCreat,tx.CodeEcart,tx.DateEcart",
+                        "from contrat c",
+                        "left join contratcb ccb on c.idContrat = ccb.idContrat",
+                        "left join histocbstatut hc on hc.idContratCB = ccb.idContratCB",
+                        "left join tarification tr on tr.idContratCB = ccb.idContratCB",
+                        "left join cb on cb.CodeCB = ccb.CodeCB",
+                        "left join tauxglobaux tg on tg.idMP = tr.idMP",
+                        "left join mp on mp.idMP = tr.idMP",
+                        "left join taux tx on tx.idTarification = tr.idTarification",
+                        "where concat_ws('_', NumContrat,NumSousContrat)= '{0}'",
+                        "group by  tx.idTaux",
+                        "order by ccb.CodeCB,cb.CodeSocle desc,tr.CodeSR,mp.CodeMP;"
+                    ]
+                }
+            ]
+        },
+        {
+            "QueryGroupName": "Adresses_postales_CassisBeta_51",
+            "FileData":{
+                "FolderPath":"K:\\Toky\\Tools\\git-temp\\Fruit-Data-Extractor\\Static\\",
+                "XlsxFileName":"extraction_adresses.xlsx"
+            },
+            "QueryParams":[
+                "concat_ws('_', ct.NumContrat, ct.NumSousContrat) = '462035_00000' and aff.NumAffiliation in (9)",
+                "concat_ws('_', ct.NumContrat, ct.NumSousContrat) = '462068_00000' and aff.NumAffiliation in (1, 3, 5, 6 , 18)",
+                "concat_ws('_', ct.NumContrat, ct.NumSousContrat) = '462071_00000' and aff.NumAffiliation in (1, 7, 10 , 11)",
+                "concat_ws('_', ct.NumContrat, ct.NumSousContrat) = '462079_00000' and aff.NumAffiliation in (6, 9 , 10)",
+                "concat_ws('_', ct.NumContrat, ct.NumSousContrat) = '462375_00000' and aff.NumAffiliation in (2)",
+                "concat_ws('_', ct.NumContrat, ct.NumSousContrat) = '462379_00000' and aff.NumAffiliation in (5, 6, 7, 8, 9, 10 , 14)"
+            ],
+            "Queries": [
+                {
+                    "CsvFileName": "Adresses postales",
+                    "Query": [
+                        "select ",
+                        "ct.NumContrat, ct.NumSousContrat,",
+                        "aff.NumAffiliation,",
+                        "per.Nom as `Nom d'usage`,",
+                        "per.NomJeuneFille as `Nom de naissance`,",
+                        "per.Prenom,",
+                        "ad.Nom as `adresse 1`,",
+                        "ad.Batiment as `adresse 2`,",
+                        "ad.voie as `adresse 3`,",
+                        "ad.LieuDit as `adresse 4`,",
+                        "ad.CodePostal as `code postal`,",
+                        "ad.Commune as ville",
+                        "from contrat ct",
+                        "join affiliation aff on ct.idContrat = aff.idContrat",
+                        "join membre m on aff.idaffiliation = m.idAffiliation",
+                        "join personne per on m.idpersonne = per.idPersonne",
+                        "join adresse ad on aff.idAffiliation = ad.idAffiliation",
+                        "where ad.DateFinAdresse is null",
+                        "and {0};"
+                    ]
+                }
+            ]
+        }
+    ]
+}
