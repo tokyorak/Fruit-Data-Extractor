@@ -54,7 +54,7 @@ public class Extractor
 
                 using var fs = new FileStream(excelFilePath, FileMode.Create, FileAccess.Write);
                 // Excel file prep
-                IWorkbook workbook = new XSSFWorkbook();
+                XSSFWorkbook workbook = new();
 
                 foreach(var query in _extractorParams.Queries)
                 {
@@ -88,7 +88,7 @@ public class Extractor
         }
     }
 
-    private static int WriteToXlsx(IWorkbook workbook, Query query, string outFileName)
+    private static int WriteToXlsx(XSSFWorkbook workbook, Query query, string outFileName)
     {
         ISheet sheet = workbook.CreateSheet(query.CsvOutputName);
         // Open each .csv file and add them to the xlsx
