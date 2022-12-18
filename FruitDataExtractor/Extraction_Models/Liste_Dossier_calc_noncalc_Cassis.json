@@ -1,0 +1,51 @@
+{
+    "modele": [
+        {
+            "XlsxFileName": "Liste_Dossier_Calc_NonCalc.xlsx",
+            "CsvFileName": "Liste_Dossier_Calc_NonCalc",
+            "Query": [
+                "SELECT",
+                "ptf.CodeEntite  as  CodeEntite,",
+                "if(isnull( ct.CodePTFderog ), ct.CodePTF, ct.CodePTFderog ) AS CodePTF,",
+                "ct.CodeSPTF AS  CodeSPTF,",
+                "ct.NumContrat AS Contrat,",
+                "ct.NumSousContrat AS SCont,",
+                "ct.CodeRegime AS REGIME,",
+                "ct.CodeStatut AS StatutContrat,",
+                "ct.DateStatut AS DateStatutContrat,",
+                "aff.NumAffiliation AS NumAff,",
+                "aff.StatutContrat,",
+                "per.NumPersonne AS NumPER,",
+                "per.Nom AS NOM,",
+                "per.Prenom AS PRENOM,",
+                "mb.OuvrantDroit,",
+                "eier.CotisationAnnuelle,",
+                "eier.Montant AS MNT_ECHANCIER,",
+                "mot.LibMotifCalcul AS MotifCalcul,",
+                "eier.DateCalcul,",
+                "year(eier.DateDebutEcheancier) AS EXERCICE",
+                "FROM",
+                "contrat ct",
+                "join echeancier eier",
+                "join affiliation aff",
+                "join membre mb",
+                "join entite ej",
+                "join portefeuille ptf",
+                "join regime rg",
+                "join personne per",
+                "join motifcalcul mot",
+                "WHERE",
+                "ct.idContrat = aff.idContrat",
+                "and aff.idAffiliation = eier.idAffiliation",
+                "and aff.idAffiliation = mb.idAffiliation and mb.OuvrantDroit = 'O'",
+                "and mb.idPersonne = per.idPersonne and per.CodeEtat <> 'S'",
+                "and ptf.CodePTF = if(isnull(ct.CodePTFderog), ct.CodePTF, ct.CodePTFderog)",
+                "and ej.CodeEntite = ptf.CodeEntite",
+                "and ct.CodeRegime = rg.CodeRegime",
+                "and eier.DateCalcul = '{0}'",
+                "and eier.idMotifCalcul = mot.idMotifCalcul",
+                "ORDER BY NumContrat,NumSousContrat,aff.idAffiliation, eier.DateCalcul asc;"
+            ]
+        }
+    ]
+}
