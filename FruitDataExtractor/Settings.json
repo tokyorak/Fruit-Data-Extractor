@@ -8,90 +8,49 @@
     },
     "QueryGroupList":[
         {
-            "QueryGroupName": "Extractions_TFA_2023_Demande_1_Cassis_51_2022_12_16",
+            "QueryGroupName": "Extractions_ExtractionHabituelle_2023_02_23_Cassis_51",
             "FileData":{
                 "FolderPath":"K:\\Toky\\Tools\\git-temp\\Fruit-Data-Extractor\\Static\\",
-                "XlsxFileName":"Nb echeancier 2023 by entité - RE7_16122022.xlsx"
+                "XlsxFileName":"Extraction.xlsx"
             },
             "QueryParams":[
-                "2022-12-14"
+                "164065_40000"
             ],
             "Queries": [
                 {
-                    "CsvFileName": "EC-Entite",
+                    "CsvFileName": "Statut-Ct",
                     "Query": [
-                        "select codeent, count(*)",
-                        "from (select pt.codeentite, pt2.codeentite as codeentitederog",
-                        ",case when pt.codeentite = pt2.codeentite or pt2.codeentite is null then pt.codeentite else pt2.codeentite end as codeent",
-                        "from contrat ct",
-                        "join affiliation af on af.idcontrat = ct.idContrat",
-                        "join echeancier ec on ec.idaffiliation = af.idAffiliation",
-                        "join portefeuille pt on pt.codeptf = ct.codeptf",
-                        "left join portefeuille pt2 on pt2.codeptf = ct.codeptfderog",
-                        "where ec.datecreat >= '{0}') ent -- CALCUL execution date",
-                        "group by codeent;"
-                    ]
-                }
-            ]
-        },
-        {
-            "QueryGroupName": "Extractions_TFA_2023_Demande_2_Cassis_51_2022_12_16",
-            "FileData":{
-                "FolderPath":"K:\\Toky\\Tools\\git-temp\\Fruit-Data-Extractor\\Static\\",
-                "XlsxFileName":"Appel de cot 2023 - RE7_16_12_2022.xlsx"
-            },
-            "QueryParams":[
-                ""
-            ],
-            "Queries": [
-                {
-                    "CsvFileName": "fic1",
-                    "Query": [
-                        "select c.codeptf, codesptf, c.CodeStatut, en.codeentite, coderegime, numcontrat, numsouscontrat, numaffiliation, nom, prenom, a1.montant as ass2023,",
-                        "er1.cotisationannuelle as cot2023, er1.montant as montantannuel2023, e1.montant as montant202301",
-                        ", a2.montant as ass2022, er3.deb2022, er3.fin2022, er3.cotisationannuelle as cot2022,  er3.montant as montantannuel2022, er3.montant202212,",
-                        "a2.montant / a1.montant as rapport_ass_2022_2023, er3.cotisationannuelle / er1.cotisationannuelle as rapport_cotis_2022_2023, ((a1.montant / a2.montant) * (er3.montant202212)) - e1.montant as diff_1222_0123",
-                        "from echeancier er1",
-                        "join assiette a1 on a1.codeassiette = 'FSS' and a1.datedebutass = '20230101'",
-                        "join assiette a2 on a2.codeassiette = 'FSS' and a2.datedebutass = '20220101'",
-                        "join echeance e1 on e1.idecheancier = er1.idecheancier and datedebutecheance = '2023-01-01'",
-                        "join affiliation a on a.idaffiliation = er1.idAffiliation",
-                        "join contrat c on c.idcontrat = a.idcontrat",
-                        "join membre m on m.idaffiliation = a.idaffiliation and ouvrantdroit = 'O'",
-                        "join personne pe on pe.idpersonne = m.idpersonne",
-                        "join portefeuille po on po.codeptf = c.CodePTF",
-                        "join entite en on en.codeentite = po.CodeEntite",
-                        "left outer join (select ermax.idaffiliation, max2022, er2.cotisationannuelle, er2.montant, er2.datedebutecheancier as deb2022, er2.datefinecheancier as fin2022,",
-                        "e2.montant as montant202212",
-                        "from (select idaffiliation, max(idecheancier) as max2022 from echeancier where numecheancier between 20220001 and 20229999 group by idaffiliation) ermax",
-                        "join echeancier er2 on ermax.max2022 = er2.idecheancier",
-                        "join echeance e2 on e2.idecheancier = er2.idecheancier and datedebutecheance = '2022-12-01') er3",
-                        "on er3.idaffiliation = a.idaffiliation",
-                        "where er1.numecheancier = 20230001;"
+                        "select ct.*,hc.* from contrat ct",
+                        "join histocontratstatut hc on ct.idContrat = hc.idContrat",
+                        "where  concat_ws('_',NumContrat,NumSousContrat)= '{0}';"
                     ]
                 },
                 {
-                    "CsvFileName": "fic2",
+                    "CsvFileName": "Statut-Cb",
                     "Query": [
-                        "select c.codeptf, codesptf, c.CodeStatut, en.codeentite, coderegime, numcontrat, numsouscontrat, numaffiliation, nom, prenom, a1.montant as ass2023,",
-                        "er3.cotisationannuelle as cot2023, er3.montant as montantannuel2023, er3.montant202301 as montant202301",
-                        ", a2.montant as ass2022, er1.datedebutecheancier as deb2022, er1.datefinecheancier as fin2022, er1.cotisationannuelle as cot2022,  er1.montant as montantannuel2022,",
-                        "e1.montant as montant202212",
-                        "from (select idaffiliation, max(idecheancier) as max2022 from echeancier where numecheancier between 20220001 and 20229999 group by idaffiliation) ermax",
-                        "join echeancier er1 on ermax.max2022 = er1.idecheancier",
-                        "join echeance e1 on e1.idecheancier = er1.idecheancier and datedebutecheance = '2022-12-01'",
-                        "join assiette a1 on a1.codeassiette = 'FSS' and a1.datedebutass = '20230101'",
-                        "join assiette a2 on a2.codeassiette = 'FSS' and a2.datedebutass = '20220101'",
-                        "join affiliation a on a.idaffiliation = ermax.idAffiliation",
-                        "join contrat c on c.idcontrat = a.idcontrat",
-                        "join membre m on m.idaffiliation = a.idaffiliation and ouvrantdroit = 'O'",
-                        "join personne pe on pe.idpersonne = m.idpersonne",
-                        "join portefeuille po on po.codeptf = c.CodePTF",
-                        "join entite en on en.codeentite = po.CodeEntite",
-                        "left outer join (select er2.idaffiliation, er2.numecheancier, er2.cotisationannuelle, er2.montant, e2.montant as montant202301",
-                        "from echeancier er2",
-                        "join echeance e2 on e2.idecheancier = er2.idecheancier and datedebutecheance = '2023-01-01' and er2.numecheancier = 20230001) er3",
-                        "on er3.idaffiliation = a.idaffiliation ;"
+                        "select ccb.*,hcb.* from contrat ct",
+                        "left join contratcb ccb  on ct.idContrat = ccb.idContrat",
+                        "left join histocbstatut hcb on ccb.idContratCB = hcb.idContratCB",
+                        "where  concat_ws('_', NumContrat,NumSousContrat)= '{0}';"
+                    ]
+                },
+                {
+                    "CsvFileName": "Taux",
+                    "Query": [
+                        "select cb.CodeCB,cb.CodeGC00,cb.CodeCotisIndiv,cb.CodeSocle,mp.CodeMP,tr.CodeSR, tx.CodeRT,tx.DateDebutTaux,tx.DateFinTaux,tx.OptionTech,",
+                        "tx.Taux1,tx.Taux2,tx.Taux3,tx.Taux4,tx.CodeAssiette1,tx.CodeAssiette2,tx.CodeAssiette3,tx.CodeAssiette4,tx.CodeFiscal,tx.DateModif,tx.DateCreat,tx.CodeEcart,tx.DateEcart",
+                        ", tx.idTaux",
+                        "from contrat c",
+                        "left join contratcb ccb on c.idContrat = ccb.idContrat",
+                        "left join histocbstatut hc on hc.idContratCB = ccb.idContratCB",
+                        "left join tarification tr on tr.idContratCB = ccb.idContratCB",
+                        "left join cb on cb.CodeCB = ccb.CodeCB",
+                        "left join tauxglobaux tg on tg.idMP = tr.idMP",
+                        "left join mp on mp.idMP = tr.idMP",
+                        "left join taux tx on tx.idTarification = tr.idTarification",
+                        "where concat_ws('_', NumContrat,NumSousContrat)= '{0}'",
+                        "group by  tx.idTaux",
+                        "order by ccb.CodeCB,cb.CodeSocle desc,tr.CodeSR,mp.CodeMP;"
                     ]
                 }
             ]

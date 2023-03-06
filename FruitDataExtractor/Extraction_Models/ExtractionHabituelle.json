@@ -20,8 +20,9 @@
         {
             "CsvFileName": "Taux",
             "Query": [
-                "select cb.CodeCB,cb.CodeGC00,cb.CodeCotisIndiv,cb.CodeSocle,mp.CodeMP,tr.CodeSR,tx.CodeRT,tx.DateDebutTaux,tx.DateFinTaux,tx.OptionTech,",
+                "select cb.CodeCB,cb.CodeGC00,cb.CodeCotisIndiv,cb.CodeSocle,mp.CodeMP,tr.CodeSR, tx.CodeRT,tx.DateDebutTaux,tx.DateFinTaux,tx.OptionTech,",
                 "tx.Taux1,tx.Taux2,tx.Taux3,tx.Taux4,tx.CodeAssiette1,tx.CodeAssiette2,tx.CodeAssiette3,tx.CodeAssiette4,tx.CodeFiscal,tx.DateModif,tx.DateCreat,tx.CodeEcart,tx.DateEcart",
+                ", tx.idTaux",
                 "from contrat c",
                 "left join contratcb ccb on c.idContrat = ccb.idContrat",
                 "left join histocbstatut hc on hc.idContratCB = ccb.idContratCB",
